@@ -17,13 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from manager.views import edit_student,send_to,student_list,login,add_student,logout_admin,reset
+from manager.constants import TemplatesPath
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',student_list,name="home"),
     path('logout/',logout_admin,name="logout"),
     path('reset/',reset,name='reset'),
-    path('login/',auth_views.LoginView.as_view(template_name="login.html"),name="login"),
+    path('login/',auth_views.LoginView.as_view(template_name=TemplatesPath.login),name="login"),
     path('edit/<id>/',edit_student,name='edit'),
     path('add/',add_student,name="addstudent"),
     path('send/<id>/',send_to,name='mail_all'),

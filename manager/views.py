@@ -1,11 +1,13 @@
-from django.shortcuts import render,redirect
+import sre_compile
+from django.shortcuts import render,redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from django.contrib.auth import logout
 from django.http import HttpResponse,HttpResponseForbidden,HttpResponseNotFound,HttpResponseRedirect
 
 from .models import StudentsList
-from .forms import StudentAddForm
+from .forms import StudentAddForm, StudentEditForm
+from .constants import TemplatesPath
 from django.core.mail import EmailMultiAlternatives
 # Create your views here.
 
@@ -37,8 +39,8 @@ def send_to(request,id):
         return HttpResponseNotFound("Wrong registration number")
     results["name"] = student.name
     
-    rendered_text = render_to_string('results_template_text.html',context=results)
-    rendered_html = render_to_string('results_template_html.html',context=results)
+    rendered_text = render_to_string(TemplatesPath.results_template_text,context=results)
+    rendered_html = render_to_string(TemplatesPath.results_template_html,context=results)
     msg = EmailMultiAlternatives(
         'Quick Results',
         rendered_text,
@@ -75,19 +77,19 @@ def logout_admin(request):
 
 def edit_student(request,id):
     if request.method == 'POST':
-        form =  StudentAddForm(request.POST)
+        studentId = id
+        student = StudentsList.objects.filter(studentid=studentId).first()
+        form =  StudentEditForm(request.POST, instance=student)
+
         if form.is_valid():
-            form.save()
+            student.save()
+
             return redirect('home')
-    else:
-        student = StudentsList.objects.filter(studentid=id)[0]
-        form = StudentAddForm()
-        form.student_id = student.studentid
-        form.name = student.name
-        form.email_address = student.email_address
-        form.mail_sent = student.mail_sent
+    elif id:
+        student = StudentsList.objects.filter(studentid=id).first()
+        form = StudentEditForm(instance=student)
         
-    return render(request,'add_student.html',{'form':form})
+    return render(request,TemplatesPath.edit_student,{'form':form})
 
 def add_student(request):
     if request.method == 'POST':
@@ -97,10 +99,10 @@ def add_student(request):
             return redirect('home')
     else:
         form = StudentAddForm()
-    return render(request,'add_student.html',{'form':form})
+    return render(request,TemplatesPath.add_student,{'form':form})
 
 def student_list(request):
     if not request.user.is_authenticated:
         return redirect("login")
     
-    return render(request,'student_list.html',context={'students':StudentsList.objects.all()})
+    return render(request,TemplatesPath.student_list,context={'students':StudentsList.objects.all()})
