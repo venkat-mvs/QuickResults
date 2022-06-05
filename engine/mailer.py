@@ -32,7 +32,7 @@ class Mailer:
 
 
 if __name__ == '__main__':
-	mail = Mailer('praveenkumar6022@gmail.com','pp9490725917.')
+	mail = Mailer('praveenkumar6022@gmail.com','****')
 	mail.login()
 	mail.mail_to('venkatsaimaragani@gmail.com','<h1>hello</h1>',"testmail")
 	mail.die()
