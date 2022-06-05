@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mail Sender</title>
+</head>
+<body>
+    <img id="img" src="{% static 'loading.gif' %}" alt="sending..">
+    <pre id="log"></pre>
+</body>
+<script>
+var completed = false
+var i=0;
+function doagain(){
+    var xhttp = new XMLHttpRequest();
+    var link = "send/"+i+"/"
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("log").innerHTML += this.responseText;
+            i++;
+            doagain();
+        }
+        else if((this.readyState == 4 && this.status == 404)){
+            document.getElementById("img").style.display = 'none';
+            return
+        }
+    };
+    xhttp.open("GET",link , true);
+    xhttp.send();
+}
+doagain()
+</script>
+</html>

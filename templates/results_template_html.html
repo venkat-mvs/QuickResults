@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mail From Quick Results</title>
+</head>
+<body style="background-color:yellow;color:blue;border:1px solid;">
+    <h1 align="center">Hey,{{ name }} Your {% if title %}{{ title }}{% endif %} Results are in 🎩</h1>
+    <div align="center">
+        <h3>Well you got {{ credits }} credits and SGPA is {{ sgpa }}</h3>
+    </div>
+    <table style="margin:10px"border="1" cellpadding="0" cellspacing="0" height="100%" width="100%">
+        <thead style="color:black">
+            {% for col in header %}
+            <th>{{ col }}</th>
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for subject in marks %}
+                <tr>
+                {% for mark in subject %}
+                    <td align='center'valign='top'>{{ mark }}</td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div align="center"style="background-color:blue;color:white;padding:10px">
+        <p>This is computer generated mail please don't reply to this Thank You!</p>
+        <h3>Copyright &copy;2020</h3>
+        <h3 style="color:white">Team QuickResults</h3>
+    </div>
+</body>
+</html>

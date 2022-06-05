@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Available Students</title>
+</head>
+<style>
+    table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#head a{
+    margin-left:20%;
+    margin-right:20%;
+}
+
+</style>
+<body>
+    <div class="head">
+        <a href="/logout/"> logout</a>
+        <a href="/reset/">reset_all</a>
+    </div>
+    <table>
+        <thead>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Mail</th>
+            <th>Edit</th>
+            <th>Sent</th>
+        </thead>
+        <tbody id="students">
+            {% for student in students %}
+                <tr id="{{student.studentid}}">
+                    <td class="id">{{student.studentid}}</td>
+                    <td class="name">{{student.name}}</td>
+                    <td class="mail">{{student.email_address}}</td>
+                    <td class="edit"><a href='edit/{{ student.studentid }}'>Edit this </a></td>
+                    <td class="status">
+                        {% if student.mail_sent %}✔{% else %}❌{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    <button onclick="doagain()">Start Sending</button>
+    <a href="add/"><button>Add Student</button> </a>
+</body>
+<script>
+var students = document.getElementById('students').getElementsByClassName("id");
+var i = 0;
+function doagain(){
+    var xhttp = new XMLHttpRequest();
+    var link = "send/"+students[i].innerText+"/"
+    document.getElementById(students[i].innerText).getElementsByClassName("status")[0].innerText = 'sending..'
+    xhttp.onreadystatechange = function() {
+        var stuid = students[i].innerText
+        if (this.readyState == 4 && this.status == 200) {
+            
+            document.getElementById(stuid).getElementsByClassName("status")[0].innerText = 'ok';
+            i++;
+            if(i==students.length)return
+            else
+            doagain();
+        }
+        else if((this.readyState == 4 && this.status == 404)){
+            document.getElementById(stuid).getElementsByClassName("status")[0].innerText = 'failed';
+            return
+        }
+    };
+    xhttp.open("GET",link , true);
+    xhttp.send();
+}
+</script>
+</html>
